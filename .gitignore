@@ -1,0 +1,45 @@
+######################################################################
+# 若依全栈项目 .gitignore
+######################################################################
+
+### Java/Maven (后端) ###
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+.gradle
+build/
+
+### Node/Vue (前端) ###
+node_modules/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+### IDE ###
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.local
+.settings/
+.project
+.classpath
+
+### OS ###
+.DS_Store
+Thumbs.db
+
+### Docker (product-A) ###
+.env.local
+*.log

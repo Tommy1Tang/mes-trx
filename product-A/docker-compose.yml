@@ -1,0 +1,87 @@
+version: '3.8'
+
+# 定义专属内部局域网
+networks:
+  ruoyi-net:
+    driver: bridge
+
+# 定义数据挂载盘 (防止数据丢失)
+volumes:
+  mysql-data:
+  redis-data:
+  ruoyi-profile: # 用于保存用户上传的头像、附件等
+
+services:
+  # ================= 1. 数据库服务 =================
+  mysql:
+    image: mysql:8.0
+    container_name: ${PROJECT_NAME}-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      TZ: Asia/Shanghai
+      MYSQL_DATABASE: ry-vue
+    ports:
+      - "${HOST_MYSQL_PORT}:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d # 自动执行该目录下的 SQL 脚本
+    networks:
+      - ruoyi-net
+    # 注意这一行！用我下面这句完整的替换你原来的 command
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --init-connect='SET NAMES utf8mb4' --character-set-client-handshake=FALSE
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ================= 2. 缓存服务 =================
+  redis:
+    image: redis:7.0-alpine
+    container_name: ${PROJECT_NAME}-redis
+    ports:
+      - "${HOST_REDIS_PORT}:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - ruoyi-net
+    command: redis-server --appendonly yes # 开启数据持久化
+
+  # ================= 3. Java 后端服务 =================
+  ruoyi-backend:
+    build: 
+      context: ../ruoyi-source # 跨目录找到后端的 Dockerfile 自动编译
+    container_name: ${PROJECT_NAME}-backend
+    depends_on:
+      redis:
+        condition: service_started
+      mysql:
+        # 👇 修改：必须等 mysql 健康检查通过（完全就绪）后才启动 Java！
+        condition: service_healthy
+    networks:
+      - ruoyi-net
+    volumes:
+      - ruoyi-profile:/home/ruoyi/uploadPath
+    environment:
+      - SPRING_DATASOURCE_DRUID_MASTER_URL=jdbc:mysql://mysql:3306/ry-vue?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+      - SPRING_DATASOURCE_DRUID_MASTER_PASSWORD=root
+      # 兼容老版 Spring Boot
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+      # 👇 终极绝杀：兼容新版 Spring Boot 3.x（若依新版配置）
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+
+  # ================= 4. Vue 前端服务 =================
+  ruoyi-frontend:
+    build:
+      context: ../ruoyi-ui-source # 跨目录找到前端的 Dockerfile 自动编译
+    container_name: ${PROJECT_NAME}-frontend
+    ports:
+      - "${HOST_HTTP_PORT}:80" # 映射你浏览器访问的 18080 端口
+    depends_on:
+      - ruoyi-backend
+    networks:
+      - ruoyi-net
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf # 挂载上面的代理配置
