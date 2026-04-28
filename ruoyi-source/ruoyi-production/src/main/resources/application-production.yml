@@ -1,0 +1,89 @@
+# 生产MES模块配置
+production:
+  # SAP系统配置
+  sap:
+    # 是否启用SAP集成
+    enabled: true
+    # JCo连接配置
+    jco:
+      client: "${SAP_CLIENT:100}"
+      user: "${SAP_USER:SAPUSER}"
+      passwd: "${SAP_PASSWD:SAPPASSWORD}"
+      lang: "${SAP_LANG:ZH}"
+      ashost: "${SAP_HOST:192.168.1.100}"
+      sysnr: "00"
+      poolCapacity: 20
+      peakLimit: 100
+    # 同步配置
+    sync:
+      # 主数据同步定时 cron表达式，每天凌晨1点执行
+      masterDataCron: "0 0 1 * * ?"
+      # 生产订单实时同步延迟，单位秒
+      orderSyncDelay: 10
+      # 投料/报工实时同步重试次数
+      retryTimes: 3
+      # 重试间隔，单位秒
+      retryInterval: 60
+
+  # UDI系统配置
+  udi:
+    # 思宇UDI系统地址
+    serverUrl: "${UDI_SERVER_URL:http://192.168.1.101:8080/udi}"
+    # 授权token
+    accessToken: "${UDI_ACCESS_TOKEN:your-access-token}"
+    # 编码规则：YYMMDD + 6位流水号
+    codeRule: "YYMMDD{6}"
+    # 打印模板路径
+    printTemplatePath: "classpath:templates/udi/"
+
+  # 标签打印配置
+  print:
+    # 打印服务器地址
+    serverUrl: "${PRINT_SERVER_URL:http://192.168.1.102:8080/print}"
+    # 标签模板路径
+    templatePath: "classpath:templates/label/"
+    # 首次打印是否需要审核
+    firstPrintNeedAudit: true
+    # 审核流程ID（OA系统）
+    auditProcessId: "oa-process-label-001"
+
+  # WMS系统配置
+  wms:
+    enabled: true
+    serverUrl: "${WMS_SERVER_URL:http://192.168.1.103:8080/wms}"
+    accessToken: "${WMS_ACCESS_TOKEN:your-wms-token}"
+    # 库存同步定时，每小时执行一次
+    stockSyncCron: "0 0 * * * ?"
+
+  # OA系统配置
+  oa:
+    enabled: true
+    serverUrl: "${OA_SERVER_URL:http://192.168.1.104:8080/oa}"
+    accessToken: "${OA_ACCESS_TOKEN:your-oa-token}"
+    # 异常流程ID
+    exceptionProcessId: "oa-process-exception-001"
+
+  # 合规配置（GMP）
+  gmp:
+    # 是否开启电子签名
+    electronicSignatureEnabled: true
+    # 操作日志保留时间，单位年
+    logRetentionYears: 5
+    # 数据修改是否需要原因
+    changeNeedReason: true
+    # 批次追溯深度，最多支持追溯多少层级
+    traceDepth: 10
+
+  # 定时任务配置
+  task:
+    # 订单自动关闭任务，每天凌晨2点执行
+    orderCloseCron: "0 0 2 * * ?"
+    # 差异报表生成，每天凌晨3点执行
+    reportGenerateCron: "0 0 3 * * ?"
+    # 数据归档任务，每月1号凌晨4点执行
+    dataArchiveCron: "0 0 4 1 * ?"
+
+# MyBatis配置，Mapper扫描路径
+mybatis:
+  mapperLocations: classpath:mapper/production/**/*Mapper.xml
+  typeAliasesPackage: com.ruoyi.production.**.domain

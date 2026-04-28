@@ -43,3 +43,10 @@ Thumbs.db
 ### Docker (product-A) ###
 .env.local
 *.log
+
+### Claude Code ###
+.claude/settings.local.json
+
+### Env files ###
+.env
+.env.*
