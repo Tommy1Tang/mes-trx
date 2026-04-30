@@ -163,3 +163,37 @@ MES系统基础表设计，P0+补充核心表（排产、电子批记录、异�
 
 #### 评审结论
 通过
+
+---
+
+### DM-20260430-005
+
+#### 变更类型
+数据字典补充
+
+#### 需求来源
+T01校验发现4个字段缺少dict_code
+
+#### 变更内容
+补充4个字段的字典编码：
+1. `pro_bom_cutover_execution_log.exec_result` - 新增字典 `mes_exec_result`
+2. `pro_production_defect.disposition_result` - 新增字典 `mes_disposition_result`
+3. `pro_schedule_log.adjust_reason` - 新增字典 `mes_adjust_reason`
+4. `pro_exception_escalation.escalation_reason` - 新增字典 `mes_escalation_reason`
+
+#### 影响范围
+- 影响模块：BOM管理、质量管理、排产管理、异常管理
+- 影响接口：无（仅字典补充）
+- 影响报表：无
+- 影响历史数据：无
+- 是否需要数据迁移：否
+
+#### 兼容策略
+仅补充字典编码，不影响现有功能。
+
+#### 校验结果
+- 硬性校验：通过
+- 字典编码校验：通过
+
+#### 评审结论
+通过

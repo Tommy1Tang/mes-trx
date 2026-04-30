@@ -1,0 +1,33 @@
+总行数: 1284
+总表数: 85
+
+=== 硬性校验 ===
+  错误: 0
+
+=== 字典校验 ===
+  缺少dict_code: 4
+    - pro_bom_cutover_execution_log.exec_result
+    - pro_production_defect.disposition_result
+    - pro_schedule_log.adjust_reason
+    - pro_exception_escalation.escalation_reason
+
+=== 字段说明校验 ===
+  有问题: 69
+    - pro_bom_header.bom_code: 'BOM编码'
+    - pro_bom_header.bom_version: 'BOM版本'
+    - pro_bom_header.bom_usage: 'BOM用途'
+    - pro_bom_header.bom_status: 'BOM状态'
+    - pro_bom_item.bom_item_id: 'BOM明细ID'
+    - pro_bom_item_operation_map.bom_item_op_map_id: 'BOM工序映射ID'
+    - pro_bom_item_operation_map.bom_item_id: 'BOM明细ID'
+    - pro_order_component.bom_item_id: 'BOM明细ID'
+    - pro_sap_system.sap_system_id: 'SAP系统ID'
+    - pro_sap_system.sap_system_code: 'SAP系统编码'
+    ... 还有59个
+
+=== 类型校验 ===
+  建议: 0
+
+=== 汇总 ===
+  Error: 0
+  Warning: 73
