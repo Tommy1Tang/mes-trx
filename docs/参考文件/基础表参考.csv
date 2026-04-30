@@ -1,0 +1,100 @@
+字段,描述,数据类型,长度,小数位
+MATNR,物料编号,CHAR,40,0
+WERKS,工厂,CHAR,4,0
+ERSDA,创建日期,DATS,8,0
+CREATED_AT_TIME,创建时间,TIMS,6,0
+ERNAM,负责创建对象的人员姓名 ,CHAR,12,0
+LAEDA,上次更改的日期 ,DATS,8,0
+AENAM,更改对象的人员姓名 ,CHAR,12,0
+VPSTA,维护全部物料状态 ,CHAR,15,0
+PSTAT,维护状态 ,CHAR,15,0
+LVORM,在客户级标记要删除的物料,CHAR,1,0
+MTART,物料类型,CHAR,4,0
+MATKL,物料组 ,CHAR,9,0
+MEINS,基本计量单位,UNIT,3,0
+BSTME,采购订单计量单位,UNIT,3,0
+RAUBE,存储条件,CHAR,2,0
+TEMPB,温度条件标识,CHAR,2,0
+STOFF,危险物料号 ,CHAR,40,0
+SPART,产品组 ,CHAR,2,0
+LAENG,长度,QUAN,13,3
+BREIT,宽度,QUAN,13,3
+HOEHE,高度,QUAN,13,3
+MEABM,长度/宽度/高度的尺寸单位 ,UNIT,3,0
+PRDHA,产品层次,CHAR,18,0
+AEKLK,库存转移净改变成本核算,CHAR,1,0
+BEGRU,权限组 ,CHAR,4,0
+MSTAE,跨工厂物料状态 ,CHAR,2,0
+MSTAV,跨分销链物料状态 ,CHAR,2,0
+MSTDE,从跨工厂物料状态有效起的日期 ,DATS,8,0
+MSTDV,从跨分销链物料状态有效起的日期 ,DATS,8,0
+RBNRM,类别参数文件,CHAR,9,0
+MHDRZ,最短剩余货架寿命 ,DEC,4,0
+MHDHB,总货架寿命 ,DEC,4,0
+ZJC,简称 ,CHAR,40,0
+ZHH,货号,CHAR,40,0
+ZPP,品牌,CHAR,40,0
+ZPPGSG,品牌归属国 ,CHAR,20,0
+ZTH,图号,CHAR,30,0
+ZZWGG,规格(中文),CHAR,160,0
+ZZWXH,型号(中文),CHAR,55,0
+ZSYYQJX,适用仪器机型,CHAR,100,0
+ZZWMC,名称（中文）,CHAR,80,0
+ZWWMC,名称（外文）,CHAR,50,0
+ZYWGG,规格(英文),CHAR,80,0
+ZYWXH,型号(英文),CHAR,40,0
+ZDI,医疗器械唯一标识（DI） ,CHAR,40,0
+ZDRCS,冻融次数,DEC,3,0
+ZSFWHP,是否危化品 ,CHAR,1,0
+ZYHZQ,养护周期,DEC,3,0
+ZPCGZ,批次规则,CHAR,1,0
+ZSQR,申请人 ,CHAR,20,0
+ZGLWL,关联物料,CHAR,18,0
+ZCPBH,产品编号,CHAR,12,0
+ZSFGKMSDS,是否管控MSDS,CHAR,1,0
+ZGSPYXQ,有效期 ,DEC,4,0
+ZGSPXQDW,有效期单位 ,CHAR,1,0
+ZSFYZD,是否易制毒 ,CHAR,1,0
+ZSFYZB,是否易制爆 ,CHAR,1,0
+ZSFJD,是否剧毒,CHAR,1,0
+AUSSS,装配报废百分比 ,DEC,5,2
+BESKZ,采购类型,CHAR,1,0
+SOBSL,特殊采购类型,CHAR,2,0
+KZAUS,中止指示符 ,CHAR,1,0
+AUSDT,中断日期,DATS,8,0
+NFMAT,后续物料,CHAR,40,0
+RGEKZ,标识：反冲 ,CHAR,1,0
+FEVOR,生产主管,CHAR,3,0
+LGPRO,发货存储地点,CHAR,4,0
+KAUSF,组件报废百分比 ,DEC,5,2
+SERNP,序列号参数文件 ,CHAR,4,0
+ZBNHP,是否可混批 ,CHAR,1,0
+ZSFXS,是否小试,CHAR,1,0
+ZXYPZZQ,小试配置周期（天数）,NUMC,3,0
+ZXYZJZQ,小试质检周期（天数）,NUMC,3,0
+ZDYCGZQ,小样采购周期（天数）,NUMC,3,0
+ZXYCGL,小试采购量 ,DEC,13,3
+ZSYLYL,溯源留样量 ,DEC,10,3
+ZGYDM,工艺代码,CHAR,3,0
+ZZYPL,最优批量 ,DEC,13,3
+ZSL,收率,DEC,13,3
+ZGYLY,工艺来源,CHAR,20,0
+ZQYQK,启用情况,CHAR,20,0
+ZKJHSXRQ,RTP,DATS,8,0
+ZKZZSXRQ,RTM,DATS,8,0
+ZTSSJ,退市时间 ,DATS,8,0
+ZWLDJ,物料等级,CHAR,1,0
+ZHSFPD,HSF判定,CHAR,1,0
+ZSYZT,首营状态 ,CHAR,2,0
+ZZLBZBH,质量标准号 ,CHAR,100,0
+ZZJXHL,质检消耗量,QUAN,13,3
+ZJ_GOODSCODE,税收分类编码,CHAR,19,0
+ZSFLY,是否留样,CHAR,1,0
+ZRGEKZ,物料反冲类型,CHAR,1,0
+ZYL1,供货工厂,CHAR,4,0
+ZYL2,可用性检查（报表） ,CHAR,1,0
+ZYL3,预留3,DATS,8,0
+ZYL4,预留4,DATS,8,0
+ZYL5,项目/系列（计划部） ,CHAR,30,0
+ZYL6,预留6,CHAR,10,0
+ZZLWJH,质量文件标准号 ,CHAR,10,0

@@ -1,0 +1,12 @@
+﻿表名,中文名称,说明
+PLANT_MASTER,工厂主数据表,工厂组织定义
+WORKSHOP_MASTER,车间主数据表,工厂下车间
+PRODUCTION_LINE_MASTER,产线主数据表,车间下产线
+WORK_CENTER_MASTER,工作中心主数据表,现场执行工作中心
+EQUIPMENT_MASTER,设备主数据表,设备资源定义
+PERSON_MASTER,人员主数据表,操作工/检验员等
+WORK_CENTER_PERSON_MAP,工作中心人员关系表,工作中心与人员绑定
+MATERIAL_MASTER,物料主数据表,原料/半成品/成品
+SUPPLIER_MASTER,供应商主数据表,供应商定义
+WAREHOUSE_MASTER,仓库主数据表,仓库定义
+STORAGE_LOCATION_MASTER,库位主数据表,库位/库存地点定义

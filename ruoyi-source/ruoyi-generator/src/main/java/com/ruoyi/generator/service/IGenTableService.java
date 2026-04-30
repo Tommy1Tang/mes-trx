@@ -44,11 +44,19 @@ public interface IGenTableService
 
     /**
      * 查询业务信息
-     * 
+     *
      * @param id 业务ID
      * @return 业务信息
      */
     public GenTable selectGenTableById(Long id);
+
+    /**
+     * 根据表名查询业务信息
+     *
+     * @param tableName 表名称
+     * @return 业务信息
+     */
+    public GenTable selectGenTableByName(String tableName);
 
     /**
      * 修改业务
