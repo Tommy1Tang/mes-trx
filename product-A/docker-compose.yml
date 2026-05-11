@@ -7,30 +7,28 @@ networks:
 
 # 定义数据挂载盘 (防止数据丢失)
 volumes:
-  mysql-data:
+  postgres-data:
   redis-data:
   ruoyi-profile: # 用于保存用户上传的头像、附件等
 
 services:
   # ================= 1. 数据库服务 =================
-  mysql:
-    image: mysql:8.0
-    container_name: ${PROJECT_NAME}-mysql
+  postgres:
+    image: postgres:16-alpine
+    container_name: ${PROJECT_NAME}-postgres
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: ry-vue
       TZ: Asia/Shanghai
-      MYSQL_DATABASE: ry-vue
     ports:
-      - "${HOST_MYSQL_PORT}:3306"
+      - "${HOST_PG_PORT}:5432"
     volumes:
-      - mysql-data:/var/lib/mysql
+      - postgres-data:/var/lib/postgresql/data
       - ./sql:/docker-entrypoint-initdb.d # 自动执行该目录下的 SQL 脚本
     networks:
       - ruoyi-net
-    # 注意这一行！用我下面这句完整的替换你原来的 command
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --init-connect='SET NAMES utf8mb4' --character-set-client-handshake=FALSE
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -55,15 +53,15 @@ services:
     depends_on:
       redis:
         condition: service_started
-      mysql:
-        # 👇 修改：必须等 mysql 健康检查通过（完全就绪）后才启动 Java！
+      postgres:
+        # 👇 必须等 postgres 健康检查通过（完全就绪）后才启动 Java！
         condition: service_healthy
     networks:
       - ruoyi-net
     volumes:
       - ruoyi-profile:/home/ruoyi/uploadPath
     environment:
-      - SPRING_DATASOURCE_DRUID_MASTER_URL=jdbc:mysql://mysql:3306/ry-vue?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+      - SPRING_DATASOURCE_DRUID_MASTER_URL=jdbc:postgresql://postgres:5432/ry-vue?currentSchema=public
       - SPRING_DATASOURCE_DRUID_MASTER_PASSWORD=root
       # 兼容老版 Spring Boot
       - SPRING_REDIS_HOST=redis
