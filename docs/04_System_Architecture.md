@@ -3,7 +3,7 @@
 完全继承现有RuoYi框架技术栈，无额外新增技术依赖：
 - 后端：Spring Boot 2.7.x + MyBatis Plus + Redis + RocketMQ
 - 前端：Vue 2.x + Element UI + uniapp(移动端)
-- 数据库：MySQL 8.0
+- 数据库：PostgreSQL 16
 - 部署：Docker + Kubernetes + 双活集群
 - 合规：电子签名符合FDA 21 CFR Part 11，符合GMP要求
 

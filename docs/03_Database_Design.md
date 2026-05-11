@@ -5,9 +5,9 @@
 - 所有表必须包含以下审计字段：
   - `del_flag char(1) default '0'`：逻辑删除标识（0存在 2删除）
   - `create_by varchar(64) default ''`：创建人
-  - `create_time datetime`：创建时间
+  - `create_time timestamp`：创建时间
   - `update_by varchar(64) default ''`：更新人
-  - `update_time datetime`：更新时间
+  - `update_time timestamp`：更新时间
 - 核心业务字段必须建立索引，保证查询性能
 - 生产数据按月分表，历史数据归档策略：超过1年的历史数据自动归档到归档库
 
