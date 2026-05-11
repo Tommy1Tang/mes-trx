@@ -62,6 +62,7 @@ services:
       - ruoyi-profile:/home/ruoyi/uploadPath
     environment:
       - SPRING_DATASOURCE_DRUID_MASTER_URL=jdbc:postgresql://postgres:5432/ry-vue?currentSchema=public
+      - SPRING_DATASOURCE_DRUID_MASTER_DRIVERCLASSNAME=org.postgresql.Driver
       - SPRING_DATASOURCE_DRUID_MASTER_PASSWORD=root
       # 兼容老版 Spring Boot
       - SPRING_REDIS_HOST=redis

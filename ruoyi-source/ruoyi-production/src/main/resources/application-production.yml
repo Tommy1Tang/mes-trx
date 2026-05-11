@@ -83,7 +83,7 @@ production:
     # 数据归档任务，每月1号凌晨4点执行
     dataArchiveCron: "0 0 4 1 * ?"
 
-# MyBatis配置，Mapper扫描路径
+# MyBatis配置，Mapper扫描路径（必须包含所有模块的mapper）
 mybatis:
-  mapperLocations: classpath:mapper/production/**/*Mapper.xml
-  typeAliasesPackage: com.ruoyi.production.**.domain
+  mapperLocations: classpath*:mapper/**/*Mapper.xml
+  typeAliasesPackage: com.ruoyi.**.domain

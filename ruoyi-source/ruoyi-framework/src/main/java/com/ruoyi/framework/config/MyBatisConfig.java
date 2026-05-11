@@ -11,10 +11,10 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.boot.autoconfigure.SpringBootVFS;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -34,6 +34,9 @@ public class MyBatisConfig
 {
     @Autowired
     private Environment env;
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     static final String DEFAULT_RESOURCE_PATTERN = "**/*.class";
 
@@ -93,7 +96,7 @@ public class MyBatisConfig
 
     public Resource[] resolveMapperLocations(String[] mapperLocations)
     {
-        ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
+        ResourcePatternResolver resourceResolver = applicationContext;
         List<Resource> resources = new ArrayList<Resource>();
         if (mapperLocations != null)
         {
@@ -126,7 +129,7 @@ public class MyBatisConfig
         sessionFactory.setDataSource(dataSource);
         sessionFactory.setTypeAliasesPackage(typeAliasesPackage);
         sessionFactory.setMapperLocations(resolveMapperLocations(StringUtils.split(mapperLocations, ",")));
-        sessionFactory.setConfigLocation(new DefaultResourceLoader().getResource(configLocation));
+        sessionFactory.setConfigLocation(applicationContext.getResource(configLocation));
         return sessionFactory.getObject();
     }
 }

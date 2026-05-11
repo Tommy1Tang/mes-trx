@@ -68,6 +68,12 @@ public class GenTableServiceImpl implements IGenTableService
         return genTable;
     }
 
+    @Override
+    public GenTable selectGenTableByName(String tableName)
+    {
+        return genTableMapper.selectGenTableByName(tableName);
+    }
+
     /**
      * 查询业务列表
      * 
