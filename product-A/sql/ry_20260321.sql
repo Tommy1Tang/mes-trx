@@ -757,8 +757,8 @@ SELECT setval('sys_job_job_id_seq', 100);
 
 -- 初始化-定时任务数据
 INSERT INTO sys_job VALUES(1, '系统默认（无参）', 'DEFAULT', 'ryTask.ryNoParams',        '0/10 * * * * ?', '3', '1', '1', 'admin', now(), '', null, '');
-INSERT INTO sys_job VALUES(2, '系统默认（有参）', 'DEFAULT', 'ryTask.ryParams(\'ry\')',  '0/15 * * * * ?', '3', '1', '1', 'admin', now(), '', null, '');
-INSERT INTO sys_job VALUES(3, '系统默认（多参）', 'DEFAULT', 'ryTask.ryMultipleParams(\'ry\', true, 2000L, 316.50D, 100)',  '0/20 * * * * ?', '3', '1', '1', 'admin', now(), '', null, '');
+INSERT INTO sys_job VALUES(2, '系统默认（有参）', 'DEFAULT', 'ryTask.ryParams(''ry'')',  '0/15 * * * * ?', '3', '1', '1', 'admin', now(), '', null, '');
+INSERT INTO sys_job VALUES(3, '系统默认（多参）', 'DEFAULT', 'ryTask.ryMultipleParams(''ry'', true, 2000L, 316.50D, 100)',  '0/20 * * * * ?', '3', '1', '1', 'admin', now(), '', null, '');
 SELECT setval('sys_job_job_id_seq', 100);
 
 
@@ -799,7 +799,7 @@ CREATE TABLE sys_notice (
   notice_id         serial          primary key,
   notice_title      varchar(50)     not null,
   notice_type       char(1)         not null,
-  notice_content    bytea           default null,
+  notice_content    text            default null,
   status            char(1)         default '0',
   create_by         varchar(64)     default '',
   create_time       timestamp,
@@ -820,8 +820,8 @@ COMMENT ON COLUMN sys_notice.update_time IS '更新时间';
 COMMENT ON COLUMN sys_notice.remark IS '备注';
 
 -- 初始化-公告信息表数据
-INSERT INTO sys_notice VALUES(1, '温馨提醒：2018-07-01 若依新版本发布啦', '2', E'\\x新版本内容', '0', 'admin', now(), '', null, '管理员');
-INSERT INTO sys_notice VALUES(2, '维护通知：2018-07-01 若依系统凌晨维护', '1', E'\\x维护内容',   '0', 'admin', now(), '', null, '管理员');
+INSERT INTO sys_notice VALUES(1, '温馨提醒：2018-07-01 若依新版本发布啦', '2', '新版本内容', '0', 'admin', now(), '', null, '管理员');
+INSERT INTO sys_notice VALUES(2, '维护通知：2018-07-01 若依系统凌晨维护', '1', '维护内容',   '0', 'admin', now(), '', null, '管理员');
 SELECT setval('sys_notice_notice_id_seq', 10);
 
 
