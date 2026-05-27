@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.production.runtime.mapper.IdempotencyRequestMapper">
+
+    <resultMap type="com.ruoyi.production.runtime.domain.IdempotencyRequest" id="idempotencyRequestResult">
+        <id property="idempotencyId" column="idempotency_id"/>
+        <result property="idempotencyKey" column="idempotency_key"/>
+        <result property="sourceTerminal" column="source_terminal"/>
+        <result property="operatorId" column="operator_id"/>
+        <result property="bizType" column="biz_type"/>
+        <result property="bizId" column="biz_id"/>
+        <result property="requestHash" column="request_hash"/>
+        <result property="processStatus" column="process_status"/>
+        <result property="responseSnapshot" column="response_snapshot"/>
+        <result property="expireTime" column="expire_time"/>
+        <result property="archiveFlag" column="archive_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectIdempotencyRequestVo">
+        select idempotency_id, idempotency_key, source_terminal, operator_id, biz_type, biz_id, request_hash, process_status, response_snapshot, expire_time, archive_flag, create_by, create_time, update_by, update_time, del_flag, remark
+        from pro_idempotency_request
+    </sql>
+
+    <select id="selectIdempotencyRequestByIdempotencyId" parameterType="long" resultMap="idempotencyRequestResult">
+        <include refid="selectIdempotencyRequestVo"/>
+        where idempotency_id = #{idempotencyId} and del_flag = '0'
+    </select>
+
+    <select id="selectIdempotencyRequestList" parameterType="com.ruoyi.production.runtime.domain.IdempotencyRequest" resultMap="idempotencyRequestResult">
+        <include refid="selectIdempotencyRequestVo"/>
+        <where>
+            del_flag = '0'
+            <if test="idempotencyKey != null and idempotencyKey != ''"> and idempotency_key = #{idempotencyKey} </if>
+            <if test="sourceTerminal != null and sourceTerminal != ''"> and source_terminal = #{sourceTerminal} </if>
+            <if test="bizType != null and bizType != ''"> and biz_type = #{bizType} </if>
+            <if test="requestHash != null and requestHash != ''"> and request_hash = #{requestHash} </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <insert id="insertIdempotencyRequest" parameterType="com.ruoyi.production.runtime.domain.IdempotencyRequest">
+        insert into pro_idempotency_request (
+            idempotency_id, idempotency_key, source_terminal, operator_id, biz_type, biz_id, request_hash, process_status, response_snapshot, expire_time, archive_flag, create_by, create_time
+        ) values (
+            #{idempotencyId}, #{idempotencyKey}, #{sourceTerminal}, #{operatorId}, #{bizType}, #{bizId}, #{requestHash}, #{processStatus}, #{responseSnapshot}, #{expireTime}, #{archiveFlag}, #{createBy}, now()
+        )
+    </insert>
+
+    <update id="updateIdempotencyRequest" parameterType="com.ruoyi.production.runtime.domain.IdempotencyRequest">
+        update pro_idempotency_request
+        <set>
+            <if test="idempotencyKey != null">idempotency_key = #{idempotencyKey},</if>
+            <if test="sourceTerminal != null">source_terminal = #{sourceTerminal},</if>
+            <if test="operatorId != null">operator_id = #{operatorId},</if>
+            <if test="bizType != null">biz_type = #{bizType},</if>
+            <if test="bizId != null">biz_id = #{bizId},</if>
+            <if test="requestHash != null">request_hash = #{requestHash},</if>
+            <if test="processStatus != null">process_status = #{processStatus},</if>
+            <if test="responseSnapshot != null">response_snapshot = #{responseSnapshot},</if>
+            <if test="expireTime != null">expire_time = #{expireTime},</if>
+            <if test="archiveFlag != null">archive_flag = #{archiveFlag},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = now()
+        </set>
+        where idempotency_id = #{idempotencyId}
+    </update>
+
+    <delete id="deleteIdempotencyRequestByIdempotencyIds" parameterType="String">
+        update pro_idempotency_request set del_flag = '1' where idempotency_id in
+        <foreach item="item" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+</mapper>

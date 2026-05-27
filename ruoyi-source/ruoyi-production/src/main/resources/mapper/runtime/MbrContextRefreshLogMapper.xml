@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.production.runtime.mapper.MbrContextRefreshLogMapper">
+
+    <resultMap type="com.ruoyi.production.runtime.domain.MbrContextRefreshLog" id="mbrContextRefreshLogResult">
+        <id property="refreshLogId" column="refresh_log_id"/>
+        <result property="oldContextId" column="old_context_id"/>
+        <result property="newContextId" column="new_context_id"/>
+        <result property="sourceType" column="source_type"/>
+        <result property="sourceEcnId" column="source_ecn_id"/>
+        <result property="affectedScope" column="affected_scope"/>
+        <result property="oldContextHash" column="old_context_hash"/>
+        <result property="newContextHash" column="new_context_hash"/>
+        <result property="beforeStatus" column="before_status"/>
+        <result property="afterStatus" column="after_status"/>
+        <result property="refreshResult" column="refresh_result"/>
+        <result property="diffSummary" column="diff_summary"/>
+        <result property="failureReason" column="failure_reason"/>
+        <result property="operatorId" column="operator_id"/>
+        <result property="signatureId" column="signature_id"/>
+        <result property="auditTrailId" column="audit_trail_id"/>
+        <result property="refreshTime" column="refresh_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectMbrContextRefreshLogVo">
+        select refresh_log_id, old_context_id, new_context_id, source_type, source_ecn_id, affected_scope, old_context_hash, new_context_hash, before_status, after_status, refresh_result, diff_summary, failure_reason, operator_id, signature_id, audit_trail_id, refresh_time, create_by, create_time, update_by, update_time, del_flag, remark
+        from pro_mbr_context_refresh_log
+    </sql>
+
+    <select id="selectMbrContextRefreshLogByRefreshLogId" parameterType="long" resultMap="mbrContextRefreshLogResult">
+        <include refid="selectMbrContextRefreshLogVo"/>
+        where refresh_log_id = #{refreshLogId} and del_flag = '0'
+    </select>
+
+    <select id="selectMbrContextRefreshLogList" parameterType="com.ruoyi.production.runtime.domain.MbrContextRefreshLog" resultMap="mbrContextRefreshLogResult">
+        <include refid="selectMbrContextRefreshLogVo"/>
+        <where>
+            del_flag = '0'
+            <if test="sourceType != null and sourceType != ''"> and source_type = #{sourceType} </if>
+            <if test="affectedScope != null and affectedScope != ''"> and affected_scope = #{affectedScope} </if>
+            <if test="oldContextHash != null and oldContextHash != ''"> and old_context_hash = #{oldContextHash} </if>
+            <if test="newContextHash != null and newContextHash != ''"> and new_context_hash = #{newContextHash} </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <insert id="insertMbrContextRefreshLog" parameterType="com.ruoyi.production.runtime.domain.MbrContextRefreshLog">
+        insert into pro_mbr_context_refresh_log (
+            refresh_log_id, old_context_id, new_context_id, source_type, source_ecn_id, affected_scope, old_context_hash, new_context_hash, before_status, after_status, refresh_result, diff_summary, failure_reason, operator_id, signature_id, audit_trail_id, refresh_time, create_by, create_time
+        ) values (
+            #{refreshLogId}, #{oldContextId}, #{newContextId}, #{sourceType}, #{sourceEcnId}, #{affectedScope}, #{oldContextHash}, #{newContextHash}, #{beforeStatus}, #{afterStatus}, #{refreshResult}, #{diffSummary}, #{failureReason}, #{operatorId}, #{signatureId}, #{auditTrailId}, #{refreshTime}, #{createBy}, now()
+        )
+    </insert>
+
+    <update id="updateMbrContextRefreshLog" parameterType="com.ruoyi.production.runtime.domain.MbrContextRefreshLog">
+        update pro_mbr_context_refresh_log
+        <set>
+            <if test="oldContextId != null">old_context_id = #{oldContextId},</if>
+            <if test="newContextId != null">new_context_id = #{newContextId},</if>
+            <if test="sourceType != null">source_type = #{sourceType},</if>
+            <if test="sourceEcnId != null">source_ecn_id = #{sourceEcnId},</if>
+            <if test="affectedScope != null">affected_scope = #{affectedScope},</if>
+            <if test="oldContextHash != null">old_context_hash = #{oldContextHash},</if>
+            <if test="newContextHash != null">new_context_hash = #{newContextHash},</if>
+            <if test="beforeStatus != null">before_status = #{beforeStatus},</if>
+            <if test="afterStatus != null">after_status = #{afterStatus},</if>
+            <if test="refreshResult != null">refresh_result = #{refreshResult},</if>
+            <if test="diffSummary != null">diff_summary = #{diffSummary},</if>
+            <if test="failureReason != null">failure_reason = #{failureReason},</if>
+            <if test="operatorId != null">operator_id = #{operatorId},</if>
+            <if test="signatureId != null">signature_id = #{signatureId},</if>
+            <if test="auditTrailId != null">audit_trail_id = #{auditTrailId},</if>
+            <if test="refreshTime != null">refresh_time = #{refreshTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = now()
+        </set>
+        where refresh_log_id = #{refreshLogId}
+    </update>
+
+    <delete id="deleteMbrContextRefreshLogByRefreshLogIds" parameterType="String">
+        update pro_mbr_context_refresh_log set del_flag = '1' where refresh_log_id in
+        <foreach item="item" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+</mapper>

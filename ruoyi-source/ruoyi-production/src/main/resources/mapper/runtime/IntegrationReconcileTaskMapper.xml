@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.production.runtime.mapper.IntegrationReconcileTaskMapper">
+
+    <resultMap type="com.ruoyi.production.runtime.domain.IntegrationReconcileTask" id="integrationReconcileTaskResult">
+        <id property="reconcileTaskId" column="reconcile_task_id"/>
+        <result property="taskNo" column="task_no"/>
+        <result property="outboxId" column="outbox_id"/>
+        <result property="interfaceMsgId" column="interface_msg_id"/>
+        <result property="deadLetterId" column="dead_letter_id"/>
+        <result property="targetSystem" column="target_system"/>
+        <result property="taskType" column="task_type"/>
+        <result property="taskAction" column="task_action"/>
+        <result property="taskStatus" column="task_status"/>
+        <result property="ownerId" column="owner_id"/>
+        <result property="slaDueTime" column="sla_due_time"/>
+        <result property="resolvedTime" column="resolved_time"/>
+        <result property="resolutionComment" column="resolution_comment"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectIntegrationReconcileTaskVo">
+        select reconcile_task_id, task_no, outbox_id, interface_msg_id, dead_letter_id, target_system, task_type, task_action, task_status, owner_id, sla_due_time, resolved_time, resolution_comment, create_by, create_time, update_by, update_time, del_flag, remark
+        from pro_integration_reconcile_task
+    </sql>
+
+    <select id="selectIntegrationReconcileTaskByReconcileTaskId" parameterType="long" resultMap="integrationReconcileTaskResult">
+        <include refid="selectIntegrationReconcileTaskVo"/>
+        where reconcile_task_id = #{reconcileTaskId} and del_flag = '0'
+    </select>
+
+    <select id="selectIntegrationReconcileTaskList" parameterType="com.ruoyi.production.runtime.domain.IntegrationReconcileTask" resultMap="integrationReconcileTaskResult">
+        <include refid="selectIntegrationReconcileTaskVo"/>
+        <where>
+            del_flag = '0'
+            <if test="taskNo != null and taskNo != ''"> and task_no = #{taskNo} </if>
+            <if test="targetSystem != null and targetSystem != ''"> and target_system = #{targetSystem} </if>
+            <if test="taskType != null and taskType != ''"> and task_type = #{taskType} </if>
+            <if test="taskAction != null and taskAction != ''"> and task_action = #{taskAction} </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <insert id="insertIntegrationReconcileTask" parameterType="com.ruoyi.production.runtime.domain.IntegrationReconcileTask">
+        insert into pro_integration_reconcile_task (
+            reconcile_task_id, task_no, outbox_id, interface_msg_id, dead_letter_id, target_system, task_type, task_action, task_status, owner_id, sla_due_time, resolved_time, resolution_comment, create_by, create_time
+        ) values (
+            #{reconcileTaskId}, #{taskNo}, #{outboxId}, #{interfaceMsgId}, #{deadLetterId}, #{targetSystem}, #{taskType}, #{taskAction}, #{taskStatus}, #{ownerId}, #{slaDueTime}, #{resolvedTime}, #{resolutionComment}, #{createBy}, now()
+        )
+    </insert>
+
+    <update id="updateIntegrationReconcileTask" parameterType="com.ruoyi.production.runtime.domain.IntegrationReconcileTask">
+        update pro_integration_reconcile_task
+        <set>
+            <if test="taskNo != null">task_no = #{taskNo},</if>
+            <if test="outboxId != null">outbox_id = #{outboxId},</if>
+            <if test="interfaceMsgId != null">interface_msg_id = #{interfaceMsgId},</if>
+            <if test="deadLetterId != null">dead_letter_id = #{deadLetterId},</if>
+            <if test="targetSystem != null">target_system = #{targetSystem},</if>
+            <if test="taskType != null">task_type = #{taskType},</if>
+            <if test="taskAction != null">task_action = #{taskAction},</if>
+            <if test="taskStatus != null">task_status = #{taskStatus},</if>
+            <if test="ownerId != null">owner_id = #{ownerId},</if>
+            <if test="slaDueTime != null">sla_due_time = #{slaDueTime},</if>
+            <if test="resolvedTime != null">resolved_time = #{resolvedTime},</if>
+            <if test="resolutionComment != null">resolution_comment = #{resolutionComment},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = now()
+        </set>
+        where reconcile_task_id = #{reconcileTaskId}
+    </update>
+
+    <delete id="deleteIntegrationReconcileTaskByReconcileTaskIds" parameterType="String">
+        update pro_integration_reconcile_task set del_flag = '1' where reconcile_task_id in
+        <foreach item="item" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+</mapper>

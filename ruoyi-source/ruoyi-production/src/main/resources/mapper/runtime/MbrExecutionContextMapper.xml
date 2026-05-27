@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.production.runtime.mapper.MbrExecutionContextMapper">
+
+    <resultMap type="com.ruoyi.production.runtime.domain.MbrExecutionContext" id="mbrExecutionContextResult">
+        <id property="contextId" column="context_id"/>
+        <result property="contextNo" column="context_no"/>
+        <result property="prodOrderId" column="prod_order_id"/>
+        <result property="mbrVersionId" column="mbr_version_id"/>
+        <result property="ebrId" column="ebr_id"/>
+        <result property="previousContextId" column="previous_context_id"/>
+        <result property="sourceEcnId" column="source_ecn_id"/>
+        <result property="contextVersion" column="context_version"/>
+        <result property="contextHash" column="context_hash"/>
+        <result property="contextStatus" column="context_status"/>
+        <result property="refreshStatus" column="refresh_status"/>
+        <result property="holdReason" column="hold_reason"/>
+        <result property="cacheKey" column="cache_key"/>
+        <result property="contextJson" column="context_json"/>
+        <result property="currentStepId" column="current_step_id"/>
+        <result property="expireTime" column="expire_time"/>
+        <result property="lockVersion" column="lock_version"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectMbrExecutionContextVo">
+        select context_id, context_no, prod_order_id, mbr_version_id, ebr_id, previous_context_id, source_ecn_id, context_version, context_hash, context_status, refresh_status, hold_reason, cache_key, context_json, current_step_id, expire_time, lock_version, create_by, create_time, update_by, update_time, del_flag, remark
+        from pro_mbr_execution_context
+    </sql>
+
+    <select id="selectMbrExecutionContextByContextId" parameterType="long" resultMap="mbrExecutionContextResult">
+        <include refid="selectMbrExecutionContextVo"/>
+        where context_id = #{contextId} and del_flag = '0'
+    </select>
+
+    <select id="selectMbrExecutionContextList" parameterType="com.ruoyi.production.runtime.domain.MbrExecutionContext" resultMap="mbrExecutionContextResult">
+        <include refid="selectMbrExecutionContextVo"/>
+        <where>
+            del_flag = '0'
+            <if test="contextNo != null and contextNo != ''"> and context_no = #{contextNo} </if>
+            <if test="contextVersion != null and contextVersion != ''"> and context_version = #{contextVersion} </if>
+            <if test="contextHash != null and contextHash != ''"> and context_hash = #{contextHash} </if>
+            <if test="contextStatus != null and contextStatus != ''"> and context_status = #{contextStatus} </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <insert id="insertMbrExecutionContext" parameterType="com.ruoyi.production.runtime.domain.MbrExecutionContext">
+        insert into pro_mbr_execution_context (
+            context_id, context_no, prod_order_id, mbr_version_id, ebr_id, previous_context_id, source_ecn_id, context_version, context_hash, context_status, refresh_status, hold_reason, cache_key, context_json, current_step_id, expire_time, lock_version, create_by, create_time
+        ) values (
+            #{contextId}, #{contextNo}, #{prodOrderId}, #{mbrVersionId}, #{ebrId}, #{previousContextId}, #{sourceEcnId}, #{contextVersion}, #{contextHash}, #{contextStatus}, #{refreshStatus}, #{holdReason}, #{cacheKey}, #{contextJson}, #{currentStepId}, #{expireTime}, #{lockVersion}, #{createBy}, now()
+        )
+    </insert>
+
+    <update id="updateMbrExecutionContext" parameterType="com.ruoyi.production.runtime.domain.MbrExecutionContext">
+        update pro_mbr_execution_context
+        <set>
+            <if test="contextNo != null">context_no = #{contextNo},</if>
+            <if test="prodOrderId != null">prod_order_id = #{prodOrderId},</if>
+            <if test="mbrVersionId != null">mbr_version_id = #{mbrVersionId},</if>
+            <if test="ebrId != null">ebr_id = #{ebrId},</if>
+            <if test="previousContextId != null">previous_context_id = #{previousContextId},</if>
+            <if test="sourceEcnId != null">source_ecn_id = #{sourceEcnId},</if>
+            <if test="contextVersion != null">context_version = #{contextVersion},</if>
+            <if test="contextHash != null">context_hash = #{contextHash},</if>
+            <if test="contextStatus != null">context_status = #{contextStatus},</if>
+            <if test="refreshStatus != null">refresh_status = #{refreshStatus},</if>
+            <if test="holdReason != null">hold_reason = #{holdReason},</if>
+            <if test="cacheKey != null">cache_key = #{cacheKey},</if>
+            <if test="contextJson != null">context_json = #{contextJson},</if>
+            <if test="currentStepId != null">current_step_id = #{currentStepId},</if>
+            <if test="expireTime != null">expire_time = #{expireTime},</if>
+            <if test="lockVersion != null">lock_version = #{lockVersion},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = now()
+        </set>
+        where context_id = #{contextId}
+    </update>
+
+    <delete id="deleteMbrExecutionContextByContextIds" parameterType="String">
+        update pro_mbr_execution_context set del_flag = '1' where context_id in
+        <foreach item="item" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+</mapper>

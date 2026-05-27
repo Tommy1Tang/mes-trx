@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.production.runtime.mapper.DeadLetterMessageMapper">
+
+    <resultMap type="com.ruoyi.production.runtime.domain.DeadLetterMessage" id="deadLetterMessageResult">
+        <id property="deadLetterId" column="dead_letter_id"/>
+        <result property="sourceTable" column="source_table"/>
+        <result property="sourceId" column="source_id"/>
+        <result property="messageType" column="message_type"/>
+        <result property="targetSystem" column="target_system"/>
+        <result property="payload" column="payload"/>
+        <result property="failureCount" column="failure_count"/>
+        <result property="lastFailTime" column="last_fail_time"/>
+        <result property="lastErrorMessage" column="last_error_message"/>
+        <result property="processStatus" column="process_status"/>
+        <result property="ownerId" column="owner_id"/>
+        <result property="slaDueTime" column="sla_due_time"/>
+        <result property="resolvedTime" column="resolved_time"/>
+        <result property="reconcileTaskId" column="reconcile_task_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectDeadLetterMessageVo">
+        select dead_letter_id, source_table, source_id, message_type, target_system, payload, failure_count, last_fail_time, last_error_message, process_status, owner_id, sla_due_time, resolved_time, reconcile_task_id, create_by, create_time, update_by, update_time, del_flag, remark
+        from pro_dead_letter_message
+    </sql>
+
+    <select id="selectDeadLetterMessageByDeadLetterId" parameterType="long" resultMap="deadLetterMessageResult">
+        <include refid="selectDeadLetterMessageVo"/>
+        where dead_letter_id = #{deadLetterId} and del_flag = '0'
+    </select>
+
+    <select id="selectDeadLetterMessageList" parameterType="com.ruoyi.production.runtime.domain.DeadLetterMessage" resultMap="deadLetterMessageResult">
+        <include refid="selectDeadLetterMessageVo"/>
+        <where>
+            del_flag = '0'
+            <if test="sourceTable != null and sourceTable != ''"> and source_table = #{sourceTable} </if>
+            <if test="messageType != null and messageType != ''"> and message_type = #{messageType} </if>
+            <if test="targetSystem != null and targetSystem != ''"> and target_system = #{targetSystem} </if>
+            <if test="payload != null and payload != ''"> and payload = #{payload} </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <insert id="insertDeadLetterMessage" parameterType="com.ruoyi.production.runtime.domain.DeadLetterMessage">
+        insert into pro_dead_letter_message (
+            dead_letter_id, source_table, source_id, message_type, target_system, payload, failure_count, last_fail_time, last_error_message, process_status, owner_id, sla_due_time, resolved_time, reconcile_task_id, create_by, create_time
+        ) values (
+            #{deadLetterId}, #{sourceTable}, #{sourceId}, #{messageType}, #{targetSystem}, #{payload}, #{failureCount}, #{lastFailTime}, #{lastErrorMessage}, #{processStatus}, #{ownerId}, #{slaDueTime}, #{resolvedTime}, #{reconcileTaskId}, #{createBy}, now()
+        )
+    </insert>
+
+    <update id="updateDeadLetterMessage" parameterType="com.ruoyi.production.runtime.domain.DeadLetterMessage">
+        update pro_dead_letter_message
+        <set>
+            <if test="sourceTable != null">source_table = #{sourceTable},</if>
+            <if test="sourceId != null">source_id = #{sourceId},</if>
+            <if test="messageType != null">message_type = #{messageType},</if>
+            <if test="targetSystem != null">target_system = #{targetSystem},</if>
+            <if test="payload != null">payload = #{payload},</if>
+            <if test="failureCount != null">failure_count = #{failureCount},</if>
+            <if test="lastFailTime != null">last_fail_time = #{lastFailTime},</if>
+            <if test="lastErrorMessage != null">last_error_message = #{lastErrorMessage},</if>
+            <if test="processStatus != null">process_status = #{processStatus},</if>
+            <if test="ownerId != null">owner_id = #{ownerId},</if>
+            <if test="slaDueTime != null">sla_due_time = #{slaDueTime},</if>
+            <if test="resolvedTime != null">resolved_time = #{resolvedTime},</if>
+            <if test="reconcileTaskId != null">reconcile_task_id = #{reconcileTaskId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = now()
+        </set>
+        where dead_letter_id = #{deadLetterId}
+    </update>
+
+    <delete id="deleteDeadLetterMessageByDeadLetterIds" parameterType="String">
+        update pro_dead_letter_message set del_flag = '1' where dead_letter_id in
+        <foreach item="item" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+</mapper>

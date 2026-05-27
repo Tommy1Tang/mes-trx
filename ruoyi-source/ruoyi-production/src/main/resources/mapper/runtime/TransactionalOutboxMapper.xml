@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.production.runtime.mapper.TransactionalOutboxMapper">
+
+    <resultMap type="com.ruoyi.production.runtime.domain.TransactionalOutbox" id="transactionalOutboxResult">
+        <id property="outboxId" column="outbox_id"/>
+        <result property="eventType" column="event_type"/>
+        <result property="bizTable" column="biz_table"/>
+        <result property="bizId" column="biz_id"/>
+        <result property="targetSystem" column="target_system"/>
+        <result property="payload" column="payload"/>
+        <result property="idempotencyKey" column="idempotency_key"/>
+        <result property="partitionKey" column="partition_key"/>
+        <result property="eventVersion" column="event_version"/>
+        <result property="traceId" column="trace_id"/>
+        <result property="publishMode" column="publish_mode"/>
+        <result property="cdcPublishedFlag" column="cdc_published_flag"/>
+        <result property="eventStatus" column="event_status"/>
+        <result property="retryCount" column="retry_count"/>
+        <result property="nextRetryTime" column="next_retry_time"/>
+        <result property="deadLetterId" column="dead_letter_id"/>
+        <result property="lastErrorMessage" column="last_error_message"/>
+        <result property="sentTime" column="sent_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectTransactionalOutboxVo">
+        select outbox_id, event_type, biz_table, biz_id, target_system, payload, idempotency_key, partition_key, event_version, trace_id, publish_mode, cdc_published_flag, event_status, retry_count, next_retry_time, dead_letter_id, last_error_message, sent_time, create_by, create_time, update_by, update_time, del_flag, remark
+        from pro_transactional_outbox
+    </sql>
+
+    <select id="selectTransactionalOutboxByOutboxId" parameterType="long" resultMap="transactionalOutboxResult">
+        <include refid="selectTransactionalOutboxVo"/>
+        where outbox_id = #{outboxId} and del_flag = '0'
+    </select>
+
+    <select id="selectTransactionalOutboxList" parameterType="com.ruoyi.production.runtime.domain.TransactionalOutbox" resultMap="transactionalOutboxResult">
+        <include refid="selectTransactionalOutboxVo"/>
+        <where>
+            del_flag = '0'
+            <if test="eventType != null and eventType != ''"> and event_type = #{eventType} </if>
+            <if test="bizTable != null and bizTable != ''"> and biz_table = #{bizTable} </if>
+            <if test="targetSystem != null and targetSystem != ''"> and target_system = #{targetSystem} </if>
+            <if test="payload != null and payload != ''"> and payload = #{payload} </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <insert id="insertTransactionalOutbox" parameterType="com.ruoyi.production.runtime.domain.TransactionalOutbox">
+        insert into pro_transactional_outbox (
+            outbox_id, event_type, biz_table, biz_id, target_system, payload, idempotency_key, partition_key, event_version, trace_id, publish_mode, cdc_published_flag, event_status, retry_count, next_retry_time, dead_letter_id, last_error_message, sent_time, create_by, create_time
+        ) values (
+            #{outboxId}, #{eventType}, #{bizTable}, #{bizId}, #{targetSystem}, #{payload}, #{idempotencyKey}, #{partitionKey}, #{eventVersion}, #{traceId}, #{publishMode}, #{cdcPublishedFlag}, #{eventStatus}, #{retryCount}, #{nextRetryTime}, #{deadLetterId}, #{lastErrorMessage}, #{sentTime}, #{createBy}, now()
+        )
+    </insert>
+
+    <update id="updateTransactionalOutbox" parameterType="com.ruoyi.production.runtime.domain.TransactionalOutbox">
+        update pro_transactional_outbox
+        <set>
+            <if test="eventType != null">event_type = #{eventType},</if>
+            <if test="bizTable != null">biz_table = #{bizTable},</if>
+            <if test="bizId != null">biz_id = #{bizId},</if>
+            <if test="targetSystem != null">target_system = #{targetSystem},</if>
+            <if test="payload != null">payload = #{payload},</if>
+            <if test="idempotencyKey != null">idempotency_key = #{idempotencyKey},</if>
+            <if test="partitionKey != null">partition_key = #{partitionKey},</if>
+            <if test="eventVersion != null">event_version = #{eventVersion},</if>
+            <if test="traceId != null">trace_id = #{traceId},</if>
+            <if test="publishMode != null">publish_mode = #{publishMode},</if>
+            <if test="cdcPublishedFlag != null">cdc_published_flag = #{cdcPublishedFlag},</if>
+            <if test="eventStatus != null">event_status = #{eventStatus},</if>
+            <if test="retryCount != null">retry_count = #{retryCount},</if>
+            <if test="nextRetryTime != null">next_retry_time = #{nextRetryTime},</if>
+            <if test="deadLetterId != null">dead_letter_id = #{deadLetterId},</if>
+            <if test="lastErrorMessage != null">last_error_message = #{lastErrorMessage},</if>
+            <if test="sentTime != null">sent_time = #{sentTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = now()
+        </set>
+        where outbox_id = #{outboxId}
+    </update>
+
+    <delete id="deleteTransactionalOutboxByOutboxIds" parameterType="String">
+        update pro_transactional_outbox set del_flag = '1' where outbox_id in
+        <foreach item="item" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+</mapper>
