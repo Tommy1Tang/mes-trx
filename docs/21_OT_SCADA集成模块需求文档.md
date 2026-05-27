@@ -5,61 +5,25 @@
 **架构层：** L7 OT/SCADA、环境公用与清洗冷链层
 **涉及表：** pro_scada_system、pro_scada_device_ref、pro_equipment_scada_map、pro_scada_point、pro_operation_data_collect、pro_process_monitor_summary、pro_scada_alarm_event、pro_equipment_state_event、pro_oee_summary、pro_environment_area、pro_environment_monitor_record、pro_utility_system、pro_water_quality_record、pro_cold_chain_monitor_record、pro_cold_chain_alarm_notice、pro_cleaning_cycle、pro_cleaning_cycle_parameter、pro_cleaning_release_record
 
-## 2. 需求清单
 
-### 2.1 SCADA系统与设备
+## 2. Absolute Progressive Loading 路由
+本模块文档只作为 Router 和模块边界，不承载全部开发细节。开发 Agent 必须按功能卡、字段字典和接口路标进行最小上下文加载。
 
-| 需求ID | 需求名称 | 优先级 | 业务规则 | 验收标准 | 涉及角色 |
-|--------|----------|--------|----------|----------|----------|
-| REQ-SCADA-001 | SCADA系统定义 | P0+++ | 定义ThingsBoard系统：系统名称、访问地址、认证方式、启用状态 | 系统配置正确 | 系统管理员 |
-| REQ-SCADA-002 | SCADA设备参考同步 | P0+++ | 从ThingsBoard同步设备信息：设备ID、设备名、设备类型、同步状态 | 设备信息完整 | 系统自动 |
-| REQ-SCADA-003 | MES设备SCADA映射 | P0+++ | 建立MES设备与ThingsBoard设备的绑定关系 | 映射关系正确 | 设备管理员 |
-| REQ-SCADA-004 | SCADA采集点位定义 | P0+++ | 定义采集点位：telemetry key、单位、数据类型、采样频率、上下限 | 点位定义完整 | 设备管理员 |
+### 2.1 功能卡索引
+| 功能卡ID | 功能卡 | 覆盖需求 | 文件 |
+|----------|--------|----------|------|
+| FC-SCADA-001 | SCADA系统与设备 | REQ-SCADA-001, REQ-SCADA-002, REQ-SCADA-003, REQ-SCADA-004 | 30_Feature_Cards/30_FC-SCADA-001_SCADA系统与设备.md |
+| FC-SCADA-002 | 数据采集 | REQ-SCADA-005, REQ-SCADA-006, REQ-SCADA-007 | 30_Feature_Cards/30_FC-SCADA-002_数据采集.md |
+| FC-SCADA-003 | 告警与设备状态 | REQ-SCADA-008, REQ-SCADA-009, REQ-SCADA-010, REQ-SCADA-011, REQ-SCADA-012 | 30_Feature_Cards/30_FC-SCADA-003_告警与设备状态.md |
+| FC-ENV-001 | 环境监测 | REQ-ENV-001, REQ-ENV-002, REQ-ENV-003, REQ-ENV-004, REQ-ENV-005 | 30_Feature_Cards/30_FC-ENV-001_环境监测.md |
+| FC-CC-001 | 冷链监控 | REQ-CC-001, REQ-CC-002, REQ-CC-003 | 30_Feature_Cards/30_FC-CC-001_冷链监控.md |
+| FC-CLN-001 | 清洗灭菌（CIP/SIP） | REQ-CLN-001, REQ-CLN-002, REQ-CLN-003, REQ-CLN-004 | 30_Feature_Cards/30_FC-CLN-001_清洗灭菌（CIPSIP）.md |
 
-### 2.2 数据采集
-
-| 需求ID | 需求名称 | 优先级 | 业务规则 | 验收标准 | 涉及角色 |
-|--------|----------|--------|----------|----------|----------|
-| REQ-SCADA-005 | 工序采集结果固化 | P0+++ | 固化与工单、工序、批次、设备相关的关键采集值，不保存高频原始数据 | 采集值准确 | 系统自动 |
-| REQ-SCADA-006 | 过程监控摘要保存 | P0+++ | 保存过程监控的最大值、最小值、均值、超限时长、曲线链接 | 摘要数据准确 | 系统自动 |
-| REQ-SCADA-007 | 采集数据关联EBR | P0+++ | 采集数据自动关联到对应的EBR参数记录 | 关联正确 | 系统自动 |
-
-### 2.3 告警与设备状态
-
-| 需求ID | 需求名称 | 优先级 | 业务规则 | 验收标准 | 涉及角色 |
-|--------|----------|--------|----------|----------|----------|
-| REQ-SCADA-008 | SCADA告警事件记录 | P0+++ | 保存ThingsBoard告警事件，关联MES异常、工单和批次 | 告警记录完整 | 系统自动 |
-| REQ-SCADA-009 | 告警自动触发异常 | P0+++ | 关键告警自动触发MES异常流程 | 触发及时 | 系统自动 |
-| REQ-SCADA-010 | 设备状态事件记录 | P1+++ | 记录Run、Stop、Alarm、微停机和设备状态切换过程 | 状态记录完整 | 系统自动 |
-| REQ-SCADA-011 | OEE汇总分析 | P1+++ | 汇总稼动率、性能、良率、OEE、停机次数和停机时长 | OEE计算准确 | 系统自动 |
-| REQ-SCADA-012 | 停机原因记录 | P1+++ | 记录停机原因：缺盖、卡瓶、缺标签、设备故障等 | 原因记录完整 | 生产人员 |
-
-### 2.4 环境监测
-
-| 需求ID | 需求名称 | 优先级 | 业务规则 | 验收标准 | 涉及角色 |
-|--------|----------|--------|----------|----------|----------|
-| REQ-ENV-001 | 环境监控区域定义 | P1++++ | 定义洁净区、走廊、缓冲间、冷库、称量间等受控区域 | 区域定义完整 | 设备管理员 |
-| REQ-ENV-002 | 环境监测记录固化 | P1++++ | 固化温度、湿度、压差、粒子数等关键环境数据 | 数据准确 | 系统自动 |
-| REQ-ENV-003 | 环境超限告警 | P1++++ | 环境参数超限时自动告警，关联到批次和异常 | 告警及时 | 系统自动 |
-| REQ-ENV-004 | 公用工程系统定义 | P1++++ | 定义纯化水、压缩空气、真空、蒸汽等公用工程系统 | 系统定义完整 | 设备管理员 |
-| REQ-ENV-005 | 纯化水质量记录 | P1++++ | 固化电导率、TOC、水温、流速等纯化水质量数据 | 数据准确 | 系统自动 |
-
-### 2.5 冷链监控
-
-| 需求ID | 需求名称 | 优先级 | 业务规则 | 验收标准 | 涉及角色 |
-|--------|----------|--------|----------|----------|----------|
-| REQ-CC-001 | 冷链监控记录 | P1++++ | 固化冰箱、冷库、冷柜、运输箱等冷链温度数据 | 数据准确 | 系统自动 |
-| REQ-CC-002 | 冷链报警通知 | P1++++ | 冷链温度异常时自动通知相关人员，记录通知方式、时间和响应结果 | 通知及时 | 系统自动 |
-| REQ-CC-003 | 冷链与物料批次关联 | P1++++ | 冷链异常自动关联到受影响的物料批次 | 关联正确 | 系统自动 |
-
-### 2.6 清洗灭菌（CIP/SIP）
-
-| 需求ID | 需求名称 | 优先级 | 业务规则 | 验收标准 | 涉及角色 |
-|--------|----------|--------|----------|----------|----------|
-| REQ-CLN-001 | 清洗灭菌周期记录 | P1++++ | 记录一次CIP/SIP过程的开始、结束和状态 | 周期记录完整 | 系统自动 |
-| REQ-CLN-002 | 清洗灭菌参数记录 | P1++++ | 保存温度、流速、电导率、压力、持续时间等清洗灭菌参数 | 参数记录完整 | 系统自动 |
-| REQ-CLN-003 | 清洗灭菌放行记录 | P1++++ | 保存清洗结果、复核人、放行结论和偏差关联 | 放行记录完整 | QA |
-| REQ-CLN-004 | 清洗灭菌与批次关联 | P1++++ | 清洗灭菌记录自动关联到对应的生产批次 | 关联正确 | 系统自动 |
+### 2.2 开发加载规则
+1. 先读取 `00_Blueprint.md`、`00_Agent_Collaboration_Rules.md`、`IVD_MES整体开发口径.md`。
+2. 按需求ID或功能卡ID读取本模块对应功能卡，例如 `rg "REQ-XXX-001" docs/30_Feature_Cards` 或 `rg "FC-XXX-001" docs/30_Feature_Cards`。
+3. 只加载功能卡声明的相关表字段、接口小节和治理规范，禁止一次加载整个字段字典。
+4. 若功能卡仍缺页面字段、交互或验收细节，先补卡再开发。
 
 ## 3. 核心流程
 

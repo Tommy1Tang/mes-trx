@@ -1,0 +1,42 @@
+﻿---
+card_id: FC-CLN-001
+module_doc: 21_OT_SCADA集成模块需求文档.md
+source_section: "2.6 清洗灭菌（CIP/SIP）"
+requirements: ["REQ-CLN-001", "REQ-CLN-002", "REQ-CLN-003", "REQ-CLN-004"]
+tables: ["pro_scada_system", "pro_scada_device_ref", "pro_equipment_scada_map", "pro_scada_point", "pro_operation_data_collect", "pro_process_monitor_summary", "pro_scada_alarm_event", "pro_equipment_state_event", "pro_oee_summary", "pro_environment_area", "pro_environment_monitor_record", "pro_utility_system"]
+status: confirmed
+---
+
+# FC-CLN-001 清洗灭菌（CIP/SIP）
+
+## 1. 加载入口
+- 路由文档：`21_OT_SCADA集成模块需求文档.md`
+- 原始小节：`2.6 清洗灭菌（CIP/SIP）`
+- 关联需求：REQ-CLN-001、REQ-CLN-002、REQ-CLN-003、REQ-CLN-004
+- 候选关联表：pro_scada_system、pro_scada_device_ref、pro_equipment_scada_map、pro_scada_point、pro_operation_data_collect、pro_process_monitor_summary、pro_scada_alarm_event、pro_equipment_state_event、pro_oee_summary、pro_environment_area、pro_environment_monitor_record、pro_utility_system、pro_water_quality_record、pro_cold_chain_monitor_record、pro_cold_chain_alarm_notice、pro_cleaning_cycle、pro_cleaning_cycle_parameter、pro_cleaning_release_record
+- 架构层：L7 OT/SCADA、环境公用与清洗冷链层
+
+## 2. 功能范围
+本功能卡承接下列需求，用于开发 Agent 按功能包进行最小上下文加载。模块边界以路由文档为准，字段落地以数据字典和DBA治理结果为准。
+
+## 3. 需求明细
+| 需求ID | 需求名称 | 优先级 | 业务规则 | 验收标准 | 涉及角色 |
+|--------|----------|--------|----------|----------|----------|
+| REQ-CLN-001 | 清洗灭菌周期记录 | P1++++ | 记录一次CIP/SIP过程的开始、结束和状态 | 周期记录完整 | 系统自动 |
+| REQ-CLN-002 | 清洗灭菌参数记录 | P1++++ | 保存温度、流速、电导率、压力、持续时间等清洗灭菌参数 | 参数记录完整 | 系统自动 |
+| REQ-CLN-003 | 清洗灭菌放行记录 | P1++++ | 保存清洗结果、复核人、放行结论和偏差关联 | 放行记录完整 | QA |
+| REQ-CLN-004 | 清洗灭菌与批次关联 | P1++++ | 清洗灭菌记录自动关联到对应的生产批次 | 关联正确 | 系统自动 |
+
+## 4. 开发级补充清单
+- 页面入口：待前端开发前由产品/架构确认。
+- 查询条件：开发前按字段字典和业务高频检索项补齐。
+- 新增/编辑规则：以本卡需求明细、字段字典必填/长度/dict_code为准。
+- 删除/停用规则：涉及已被工单、批次、审计或接口引用的数据，默认只允许停用，不允许物理删除。
+- 权限点：遵循RuoYi权限体系，权限标识以接口规范为准。
+- 审计追踪：影响受控生产、放行、追溯和接口补偿的数据必须留痕。
+
+## 5. 验收用例骨架
+- 正向：必填字段完整、编码唯一、状态有效时可保存。
+- 反向：编码重复、必填缺失、引用对象不存在或状态不可用时必须阻断。
+- 权限：无对应权限时不可新增、编辑、删除/停用或导出。
+- 审计：新增、修改、停用、审核、导入等关键动作可追溯。
