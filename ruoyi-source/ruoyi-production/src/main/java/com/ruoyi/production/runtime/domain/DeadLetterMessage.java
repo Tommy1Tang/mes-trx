@@ -57,6 +57,9 @@ public class DeadLetterMessage extends BaseEntity
     @Excel(name = "补偿任务ID")
     private Long reconcileTaskId;
 
+    /** 删除标志 */
+    private String delFlag;
+
     public Long getDeadLetterId()
     {
         return deadLetterId;
@@ -195,6 +198,16 @@ public class DeadLetterMessage extends BaseEntity
     public void setReconcileTaskId(Long reconcileTaskId)
     {
         this.reconcileTaskId = reconcileTaskId;
+    }
+
+    public String getDelFlag()
+    {
+        return delFlag;
+    }
+
+    public void setDelFlag(String delFlag)
+    {
+        this.delFlag = delFlag;
     }
 
 }

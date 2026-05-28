@@ -50,11 +50,13 @@
         order by create_time desc
     </select>
 
-    <insert id="insertMbrContextRefreshLog" parameterType="com.ruoyi.production.runtime.domain.MbrContextRefreshLog">
+    <insert id="insertMbrContextRefreshLog" parameterType="com.ruoyi.production.runtime.domain.MbrContextRefreshLog" useGeneratedKeys="true" keyProperty="refreshLogId">
         insert into pro_mbr_context_refresh_log (
-            refresh_log_id, old_context_id, new_context_id, source_type, source_ecn_id, affected_scope, old_context_hash, new_context_hash, before_status, after_status, refresh_result, diff_summary, failure_reason, operator_id, signature_id, audit_trail_id, refresh_time, create_by, create_time
+            <if test="refreshLogId != null">refresh_log_id,</if>
+            old_context_id, new_context_id, source_type, source_ecn_id, affected_scope, old_context_hash, new_context_hash, before_status, after_status, refresh_result, diff_summary, failure_reason, operator_id, signature_id, audit_trail_id, refresh_time, create_by, create_time
         ) values (
-            #{refreshLogId}, #{oldContextId}, #{newContextId}, #{sourceType}, #{sourceEcnId}, #{affectedScope}, #{oldContextHash}, #{newContextHash}, #{beforeStatus}, #{afterStatus}, #{refreshResult}, #{diffSummary}, #{failureReason}, #{operatorId}, #{signatureId}, #{auditTrailId}, #{refreshTime}, #{createBy}, now()
+            <if test="refreshLogId != null">#{refreshLogId},</if>
+            #{oldContextId}, #{newContextId}, #{sourceType}, #{sourceEcnId}, #{affectedScope}, #{oldContextHash}, #{newContextHash}, #{beforeStatus}, #{afterStatus}, #{refreshResult}, #{diffSummary}, #{failureReason}, #{operatorId}, #{signatureId}, #{auditTrailId}, #{refreshTime}, #{createBy}, now()
         )
     </insert>
 

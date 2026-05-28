@@ -1,9 +1,5 @@
 package com.ruoyi.production.runtime.aspect;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -16,20 +12,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.core.domain.AjaxResult;
 import jakarta.servlet.http.HttpServletRequest;
-
-/**
- * 幂等校验注解
- */
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Idempotent
-{
-    /** 业务类型 */
-    String bizType() default "";
-
-    /** 幂等键来源：header=从请求头取, param=从参数取 */
-    String keySource() default "header";
-}
 
 /**
  * 幂等校验切面

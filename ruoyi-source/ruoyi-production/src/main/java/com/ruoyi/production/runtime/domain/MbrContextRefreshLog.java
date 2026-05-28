@@ -64,6 +64,8 @@ public class MbrContextRefreshLog extends BaseEntity
     @Excel(name = "刷新时间")
     private Date refreshTime;
 
+    private String delFlag;
+
     public Long getRefreshLogId()
     {
         return refreshLogId;
@@ -232,6 +234,16 @@ public class MbrContextRefreshLog extends BaseEntity
     public void setRefreshTime(Date refreshTime)
     {
         this.refreshTime = refreshTime;
+    }
+
+    public String getDelFlag()
+    {
+        return delFlag;
+    }
+
+    public void setDelFlag(String delFlag)
+    {
+        this.delFlag = delFlag;
     }
 
 }

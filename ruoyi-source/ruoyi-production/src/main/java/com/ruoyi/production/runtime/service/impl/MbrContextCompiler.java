@@ -153,7 +153,7 @@ public class MbrContextCompiler
         }
         try
         {
-            String[] parts = currentVersion.split("\.");
+            String[] parts = currentVersion.split("\\.");
             int minor = Integer.parseInt(parts[1]) + 1;
             return parts[0] + "." + minor;
         }

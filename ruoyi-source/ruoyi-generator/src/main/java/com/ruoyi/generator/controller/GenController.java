@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.statement.PgCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -137,9 +137,9 @@ public class GenController extends BaseController
             List<String> tableNames = new ArrayList<>();
             for (SQLStatement sqlStatement : sqlStatements)
             {
-                if (sqlStatement instanceof PgCreateTableStatement)
+                if (sqlStatement instanceof SQLCreateTableStatement)
                 {
-                    PgCreateTableStatement createTableStatement = (PgCreateTableStatement) sqlStatement;
+                    SQLCreateTableStatement createTableStatement = (SQLCreateTableStatement) sqlStatement;
                     if (genTableService.createTable(createTableStatement.toString()))
                     {
                         String tableName = createTableStatement.getTableName().replaceAll("`", "");

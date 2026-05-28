@@ -53,6 +53,8 @@ public class IntegrationReconcileTask extends BaseEntity
     @Excel(name = "解决说明")
     private String resolutionComment;
 
+    private String delFlag;
+
     public Long getReconcileTaskId()
     {
         return reconcileTaskId;
@@ -181,6 +183,16 @@ public class IntegrationReconcileTask extends BaseEntity
     public void setResolutionComment(String resolutionComment)
     {
         this.resolutionComment = resolutionComment;
+    }
+
+    public String getDelFlag()
+    {
+        return delFlag;
+    }
+
+    public void setDelFlag(String delFlag)
+    {
+        this.delFlag = delFlag;
     }
 
 }

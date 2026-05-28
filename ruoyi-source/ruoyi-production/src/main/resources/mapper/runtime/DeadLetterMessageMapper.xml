@@ -42,16 +42,18 @@
             <if test="sourceTable != null and sourceTable != ''"> and source_table = #{sourceTable} </if>
             <if test="messageType != null and messageType != ''"> and message_type = #{messageType} </if>
             <if test="targetSystem != null and targetSystem != ''"> and target_system = #{targetSystem} </if>
-            <if test="payload != null and payload != ''"> and payload = #{payload} </if>
+            <if test="payload != null and payload != ''"> and payload = #{payload}::jsonb </if>
         </where>
         order by create_time desc
     </select>
 
-    <insert id="insertDeadLetterMessage" parameterType="com.ruoyi.production.runtime.domain.DeadLetterMessage">
+    <insert id="insertDeadLetterMessage" parameterType="com.ruoyi.production.runtime.domain.DeadLetterMessage" useGeneratedKeys="true" keyProperty="deadLetterId">
         insert into pro_dead_letter_message (
-            dead_letter_id, source_table, source_id, message_type, target_system, payload, failure_count, last_fail_time, last_error_message, process_status, owner_id, sla_due_time, resolved_time, reconcile_task_id, create_by, create_time
+            <if test="deadLetterId != null">dead_letter_id,</if>
+            source_table, source_id, message_type, target_system, payload, failure_count, last_fail_time, last_error_message, process_status, owner_id, sla_due_time, resolved_time, reconcile_task_id, create_by, create_time
         ) values (
-            #{deadLetterId}, #{sourceTable}, #{sourceId}, #{messageType}, #{targetSystem}, #{payload}, #{failureCount}, #{lastFailTime}, #{lastErrorMessage}, #{processStatus}, #{ownerId}, #{slaDueTime}, #{resolvedTime}, #{reconcileTaskId}, #{createBy}, now()
+            <if test="deadLetterId != null">#{deadLetterId},</if>
+            #{sourceTable}, #{sourceId}, #{messageType}, #{targetSystem}, #{payload}::jsonb, #{failureCount}, #{lastFailTime}, #{lastErrorMessage}, #{processStatus}, #{ownerId}, #{slaDueTime}, #{resolvedTime}, #{reconcileTaskId}, #{createBy}, now()
         )
     </insert>
 
@@ -62,7 +64,7 @@
             <if test="sourceId != null">source_id = #{sourceId},</if>
             <if test="messageType != null">message_type = #{messageType},</if>
             <if test="targetSystem != null">target_system = #{targetSystem},</if>
-            <if test="payload != null">payload = #{payload},</if>
+            <if test="payload != null">payload = #{payload}::jsonb,</if>
             <if test="failureCount != null">failure_count = #{failureCount},</if>
             <if test="lastFailTime != null">last_fail_time = #{lastFailTime},</if>
             <if test="lastErrorMessage != null">last_error_message = #{lastErrorMessage},</if>

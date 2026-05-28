@@ -46,6 +46,8 @@ public class IdempotencyRequest extends BaseEntity
     @Excel(name = "是否已归档")
     private String archiveFlag;
 
+    private String delFlag;
+
     public Long getIdempotencyId()
     {
         return idempotencyId;
@@ -154,6 +156,16 @@ public class IdempotencyRequest extends BaseEntity
     public void setArchiveFlag(String archiveFlag)
     {
         this.archiveFlag = archiveFlag;
+    }
+
+    public String getDelFlag()
+    {
+        return delFlag;
+    }
+
+    public void setDelFlag(String delFlag)
+    {
+        this.delFlag = delFlag;
     }
 
 }

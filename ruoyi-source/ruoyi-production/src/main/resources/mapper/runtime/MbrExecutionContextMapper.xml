@@ -50,11 +50,13 @@
         order by create_time desc
     </select>
 
-    <insert id="insertMbrExecutionContext" parameterType="com.ruoyi.production.runtime.domain.MbrExecutionContext">
+    <insert id="insertMbrExecutionContext" parameterType="com.ruoyi.production.runtime.domain.MbrExecutionContext" useGeneratedKeys="true" keyProperty="contextId">
         insert into pro_mbr_execution_context (
-            context_id, context_no, prod_order_id, mbr_version_id, ebr_id, previous_context_id, source_ecn_id, context_version, context_hash, context_status, refresh_status, hold_reason, cache_key, context_json, current_step_id, expire_time, lock_version, create_by, create_time
+            <if test="contextId != null">context_id,</if>
+            context_no, prod_order_id, mbr_version_id, ebr_id, previous_context_id, source_ecn_id, context_version, context_hash, context_status, refresh_status, hold_reason, cache_key, context_json, current_step_id, expire_time, lock_version, create_by, create_time
         ) values (
-            #{contextId}, #{contextNo}, #{prodOrderId}, #{mbrVersionId}, #{ebrId}, #{previousContextId}, #{sourceEcnId}, #{contextVersion}, #{contextHash}, #{contextStatus}, #{refreshStatus}, #{holdReason}, #{cacheKey}, #{contextJson}, #{currentStepId}, #{expireTime}, #{lockVersion}, #{createBy}, now()
+            <if test="contextId != null">#{contextId},</if>
+            #{contextNo}, #{prodOrderId}, #{mbrVersionId}, #{ebrId}, #{previousContextId}, #{sourceEcnId}, #{contextVersion}, #{contextHash}, #{contextStatus}, #{refreshStatus}, #{holdReason}, #{cacheKey}, #{contextJson}::jsonb, #{currentStepId}, #{expireTime}, #{lockVersion}, #{createBy}, now()
         )
     </insert>
 
@@ -73,7 +75,7 @@
             <if test="refreshStatus != null">refresh_status = #{refreshStatus},</if>
             <if test="holdReason != null">hold_reason = #{holdReason},</if>
             <if test="cacheKey != null">cache_key = #{cacheKey},</if>
-            <if test="contextJson != null">context_json = #{contextJson},</if>
+            <if test="contextJson != null">context_json = #{contextJson}::jsonb,</if>
             <if test="currentStepId != null">current_step_id = #{currentStepId},</if>
             <if test="expireTime != null">expire_time = #{expireTime},</if>
             <if test="lockVersion != null">lock_version = #{lockVersion},</if>

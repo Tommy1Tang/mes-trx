@@ -46,13 +46,13 @@ public class TransactionalOutbox extends BaseEntity
     private String publishMode;
 
     @Excel(name = "CDC是否已发布")
-    private String cdcPublishedFlag;
+    private String cdcPublishedFlag = "0";
 
     @Excel(name = "事件状态")
     private String eventStatus;
 
     @Excel(name = "重试次数")
-    private Integer retryCount;
+    private Integer retryCount = 0;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Excel(name = "下次重试时间")
@@ -246,6 +246,19 @@ public class TransactionalOutbox extends BaseEntity
     public void setSentTime(Date sentTime)
     {
         this.sentTime = sentTime;
+    }
+
+    /** 删除标志 */
+    private String delFlag;
+
+    public String getDelFlag()
+    {
+        return delFlag;
+    }
+
+    public void setDelFlag(String delFlag)
+    {
+        this.delFlag = delFlag;
     }
 
 }

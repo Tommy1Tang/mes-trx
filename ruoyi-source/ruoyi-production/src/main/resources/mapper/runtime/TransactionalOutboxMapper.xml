@@ -46,16 +46,18 @@
             <if test="eventType != null and eventType != ''"> and event_type = #{eventType} </if>
             <if test="bizTable != null and bizTable != ''"> and biz_table = #{bizTable} </if>
             <if test="targetSystem != null and targetSystem != ''"> and target_system = #{targetSystem} </if>
-            <if test="payload != null and payload != ''"> and payload = #{payload} </if>
+            <if test="payload != null and payload != ''"> and payload = #{payload}::jsonb </if>
         </where>
         order by create_time desc
     </select>
 
-    <insert id="insertTransactionalOutbox" parameterType="com.ruoyi.production.runtime.domain.TransactionalOutbox">
+    <insert id="insertTransactionalOutbox" parameterType="com.ruoyi.production.runtime.domain.TransactionalOutbox" useGeneratedKeys="true" keyProperty="outboxId">
         insert into pro_transactional_outbox (
-            outbox_id, event_type, biz_table, biz_id, target_system, payload, idempotency_key, partition_key, event_version, trace_id, publish_mode, cdc_published_flag, event_status, retry_count, next_retry_time, dead_letter_id, last_error_message, sent_time, create_by, create_time
+            <if test="outboxId != null">outbox_id,</if>
+            event_type, biz_table, biz_id, target_system, payload, idempotency_key, partition_key, event_version, trace_id, publish_mode, cdc_published_flag, event_status, retry_count, next_retry_time, dead_letter_id, last_error_message, sent_time, create_by, create_time
         ) values (
-            #{outboxId}, #{eventType}, #{bizTable}, #{bizId}, #{targetSystem}, #{payload}, #{idempotencyKey}, #{partitionKey}, #{eventVersion}, #{traceId}, #{publishMode}, #{cdcPublishedFlag}, #{eventStatus}, #{retryCount}, #{nextRetryTime}, #{deadLetterId}, #{lastErrorMessage}, #{sentTime}, #{createBy}, now()
+            <if test="outboxId != null">#{outboxId},</if>
+            #{eventType}, #{bizTable}, #{bizId}, #{targetSystem}, #{payload}::jsonb, #{idempotencyKey}, #{partitionKey}, #{eventVersion}, #{traceId}, #{publishMode}, #{cdcPublishedFlag}, #{eventStatus}, #{retryCount}, #{nextRetryTime}, #{deadLetterId}, #{lastErrorMessage}, #{sentTime}, #{createBy}, now()
         )
     </insert>
 
@@ -66,7 +68,7 @@
             <if test="bizTable != null">biz_table = #{bizTable},</if>
             <if test="bizId != null">biz_id = #{bizId},</if>
             <if test="targetSystem != null">target_system = #{targetSystem},</if>
-            <if test="payload != null">payload = #{payload},</if>
+            <if test="payload != null">payload = #{payload}::jsonb,</if>
             <if test="idempotencyKey != null">idempotency_key = #{idempotencyKey},</if>
             <if test="partitionKey != null">partition_key = #{partitionKey},</if>
             <if test="eventVersion != null">event_version = #{eventVersion},</if>

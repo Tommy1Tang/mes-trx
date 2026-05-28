@@ -46,11 +46,13 @@
         order by create_time desc
     </select>
 
-    <insert id="insertIntegrationReconcileTask" parameterType="com.ruoyi.production.runtime.domain.IntegrationReconcileTask">
+    <insert id="insertIntegrationReconcileTask" parameterType="com.ruoyi.production.runtime.domain.IntegrationReconcileTask" useGeneratedKeys="true" keyProperty="reconcileTaskId">
         insert into pro_integration_reconcile_task (
-            reconcile_task_id, task_no, outbox_id, interface_msg_id, dead_letter_id, target_system, task_type, task_action, task_status, owner_id, sla_due_time, resolved_time, resolution_comment, create_by, create_time
+            <if test="reconcileTaskId != null">reconcile_task_id,</if>
+            task_no, outbox_id, interface_msg_id, dead_letter_id, target_system, task_type, task_action, task_status, owner_id, sla_due_time, resolved_time, resolution_comment, create_by, create_time
         ) values (
-            #{reconcileTaskId}, #{taskNo}, #{outboxId}, #{interfaceMsgId}, #{deadLetterId}, #{targetSystem}, #{taskType}, #{taskAction}, #{taskStatus}, #{ownerId}, #{slaDueTime}, #{resolvedTime}, #{resolutionComment}, #{createBy}, now()
+            <if test="reconcileTaskId != null">#{reconcileTaskId},</if>
+            #{taskNo}, #{outboxId}, #{interfaceMsgId}, #{deadLetterId}, #{targetSystem}, #{taskType}, #{taskAction}, #{taskStatus}, #{ownerId}, #{slaDueTime}, #{resolvedTime}, #{resolutionComment}, #{createBy}, now()
         )
     </insert>
 

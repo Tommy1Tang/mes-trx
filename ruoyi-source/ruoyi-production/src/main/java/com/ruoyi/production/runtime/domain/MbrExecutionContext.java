@@ -64,6 +64,8 @@ public class MbrExecutionContext extends BaseEntity
     @Excel(name = "乐观锁版本")
     private Integer lockVersion;
 
+    private String delFlag;
+
     public Long getContextId()
     {
         return contextId;
@@ -232,6 +234,16 @@ public class MbrExecutionContext extends BaseEntity
     public void setLockVersion(Integer lockVersion)
     {
         this.lockVersion = lockVersion;
+    }
+
+    public String getDelFlag()
+    {
+        return delFlag;
+    }
+
+    public void setDelFlag(String delFlag)
+    {
+        this.delFlag = delFlag;
     }
 
 }
