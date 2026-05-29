@@ -3,7 +3,7 @@ card_id: FC-EBR-003
 module_doc: 17_电子批记录模块需求文档.md
 source_section: "2.3 EBR参数记录"
 requirements: ["REQ-EBR-008", "REQ-EBR-009", "REQ-EBR-010"]
-tables: ["pro_ebr_header", "pro_ebr_step_record", "pro_ebr_param_record", "pro_batch_review", "pro_line_clearance_check"]
+tables: ["pro_ebr_header", "pro_ebr_step_record", "pro_ebr_param_record", "pro_batch_review", "pro_line_clearance_check", "pro_mbr_execution_context"]
 status: confirmed
 ---
 
@@ -13,7 +13,7 @@ status: confirmed
 - 路由文档：`17_电子批记录模块需求文档.md`
 - 原始小节：`2.3 EBR参数记录`
 - 关联需求：REQ-EBR-008、REQ-EBR-009、REQ-EBR-010
-- 候选关联表：pro_ebr_header、pro_ebr_step_record、pro_ebr_param_record、pro_batch_review、pro_line_clearance_check
+- 候选关联表：pro_ebr_header、pro_ebr_step_record、pro_ebr_param_record、pro_batch_review、pro_line_clearance_check、pro_mbr_execution_context
 - 架构层：L5 现场执行、称量与电子批记录层
 
 ## 2. 功能范围
@@ -22,11 +22,14 @@ status: confirmed
 ## 3. 需求明细
 | 需求ID | 需求名称 | 优先级 | 业务规则 | 验收标准 | 涉及角色 |
 |--------|----------|--------|----------|----------|----------|
-| REQ-EBR-008 | EBR参数记录固化 | P0++ | 固化实际温度、转速、重量、时间、压力、pH、电导率等关键参数，每个参数记录：参数名称、目标值、实际值、上限、下限、判定结果 | 参数记录完整 | 系统自动 |
-| REQ-EBR-009 | 参数数据来源 | P0++ | 支持多种数据来源：人工录入、电子天平自动采集、SCADA自动采集、PLC自动采集 | 数据来源记录正确 | 系统自动 |
-| REQ-EBR-010 | 参数超限处理 | P0++ | 参数超出目标值±允差范围时自动标记为超限，触发复核或异常流程 | 超限处理及时 | 系统自动 |
+| REQ-EBR-008 | EBR参数记录固化 | P0++ | 基于执行快照中的步骤参数固化实际温度、转速、重量、时间、压力、pH、电导率等关键参数，每个参数记录：步骤参数快照、参数名称、目标值、实际值、上限、下限、单位、判定结果 | 参数记录完整，参数判定依据可追溯 | 系统自动 |
+| REQ-EBR-009 | 参数数据来源 | P0++ | 支持多种数据来源：人工录入、电子天平自动采集、SCADA自动采集、PLC自动采集；数据来源必须来自执行快照配置，并记录原始数据链接、采样时间和采集结果引用 | 数据来源记录正确，原始证据可追溯 | 系统自动 |
+| REQ-EBR-010 | 参数超限处理 | P0++ | 参数超出执行快照固化的目标值、上下限或允差范围时自动标记为超限，触发复核、异常流程或Hold规则 | 超限处理及时，判定不受后续MBR改版影响 | 系统自动 |
 
 ## 4. 开发级补充清单
+- EBR参数记录必须引用`ebr_step_id`和`step_param_id`，并固化执行快照中的目标值、上下限、单位、控制方式和数据来源。
+- 参数判定必须以执行快照中的参数定义为准，不允许因MBR后续改版改变已记录参数的判定依据。
+- 人工录入、称量、SCADA/PLC采集数据必须保留来源引用、采样时间和原始数据链接；超限时按执行快照中的复核、异常或Hold规则处理。
 - 页面入口：待前端开发前由产品/架构确认。
 - 查询条件：开发前按字段字典和业务高频检索项补齐。
 - 新增/编辑规则：以本卡需求明细、字段字典必填/长度/dict_code为准。

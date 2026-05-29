@@ -3,7 +3,7 @@ card_id: FC-EBR-002
 module_doc: 17_电子批记录模块需求文档.md
 source_section: "2.2 EBR步骤记录"
 requirements: ["REQ-EBR-004", "REQ-EBR-005", "REQ-EBR-006", "REQ-EBR-007"]
-tables: ["pro_ebr_header", "pro_ebr_step_record", "pro_ebr_param_record", "pro_batch_review", "pro_line_clearance_check"]
+tables: ["pro_ebr_header", "pro_ebr_step_record", "pro_ebr_param_record", "pro_batch_review", "pro_line_clearance_check", "pro_mbr_execution_context"]
 status: confirmed
 ---
 
@@ -13,7 +13,7 @@ status: confirmed
 - 路由文档：`17_电子批记录模块需求文档.md`
 - 原始小节：`2.2 EBR步骤记录`
 - 关联需求：REQ-EBR-004、REQ-EBR-005、REQ-EBR-006、REQ-EBR-007
-- 候选关联表：pro_ebr_header、pro_ebr_step_record、pro_ebr_param_record、pro_batch_review、pro_line_clearance_check
+- 候选关联表：pro_ebr_header、pro_ebr_step_record、pro_ebr_param_record、pro_batch_review、pro_line_clearance_check、pro_mbr_execution_context
 - 架构层：L5 现场执行、称量与电子批记录层
 
 ## 2. 功能范围
@@ -22,12 +22,15 @@ status: confirmed
 ## 3. 需求明细
 | 需求ID | 需求名称 | 优先级 | 业务规则 | 验收标准 | 涉及角色 |
 |--------|----------|--------|----------|----------|----------|
-| REQ-EBR-004 | EBR步骤记录固化 | P0++ | 记录每个MBR Step的实际执行情况：实际开始时间、实际结束时间、执行人、执行设备、执行状态（完成/跳过/返工）、复核结果 | 步骤记录完整 | 系统自动 |
-| REQ-EBR-005 | EBR步骤执行顺序 | P0++ | 严格按照MBR步骤流转规则执行，前一步骤未完成不可执行下一步骤（条件分支/跳转除外） | 顺序控制正确 | 系统自动 |
+| REQ-EBR-004 | EBR步骤记录固化 | P0++ | 记录执行快照中每个MBR Step的实际执行情况：执行上下文、步骤快照、实际开始时间、实际结束时间、执行人、执行设备、执行状态（完成/跳过/返工）、复核结果 | 步骤记录完整，步骤快照可追溯 | 系统自动 |
+| REQ-EBR-005 | EBR步骤执行顺序 | P0++ | 严格按照执行快照中的MBR步骤流转规则执行，前一步骤未完成不可执行下一步骤（条件分支/跳转除外）；执行过程不得实时读取当前MBR主镜像改写步骤顺序 | 顺序控制正确，后续MBR改版不影响已下达EBR | 系统自动 |
 | REQ-EBR-006 | EBR步骤跳过/返工 | P0++ | 支持步骤跳过（需审批）和步骤返工（需审批），记录跳过/返工原因 | 操作留痕完整 | 生产人员、QA |
 | REQ-EBR-007 | EBR步骤复核 | P0++ | 关键步骤需要复核员复核确认，复核通过后才能继续下一步骤 | 复核流程完整 | 复核员 |
 
 ## 4. 开发级补充清单
+- EBR步骤记录必须绑定`context_id`、`phase_id`、`step_id`和必要的`step_snapshot`，执行事实以步骤快照为准。
+- 步骤跳过、返工、人工跳转必须基于执行快照中允许的规则执行，并记录审批、原因和审计追踪。
+- 如执行上下文进入Safe Hold或刷新状态，步骤继续执行必须阻断或提示，不能绕开上下文状态直接执行。
 - 页面入口：待前端开发前由产品/架构确认。
 - 查询条件：开发前按字段字典和业务高频检索项补齐。
 - 新增/编辑规则：以本卡需求明细、字段字典必填/长度/dict_code为准。

@@ -4,6 +4,8 @@ MBR（Master Batch Record，主批生产记录模板）是IVD受控生产的核�
 
 MES 中的 `pro_mbr_*` 表定位为 PLM MBR 的执行镜像和执行结构，不承载 MBR 主版本审批、主版本发布、主版本冻结和 SOP 文档生命周期。PLM 暂时无法结构化输出时，MES 可提供 Excel 批导作为受控补充入口，但批导必须走同等校验、审计、权限和来源文件留存，不得绕过 PLM 审批。
 
+MBR与BOM/工艺路线的边界必须保持清晰：BOM定义物料和基准用量，工艺路线定义工序级骨架，MBR定义工序下的工步级执行明细。MBR Phase通常对应工艺路线工序，MBR Step对应工序下的执行工步；Step中的物料、设备、参数和质控必须引用或校验BOM、工艺路线、检验方案等上游基准，不允许脱离上游基准另建一套执行主数据。
+
 **架构层：** L2 产品、工艺与MBR模板层（后半部分）
 **涉及表：** pro_mbr_header、pro_mbr_version、pro_mbr_phase、pro_mbr_step、pro_mbr_step_parameter、pro_mbr_step_material、pro_mbr_step_equipment、pro_mbr_step_quality、pro_mbr_step_transition、pro_mbr_rework_rule、pro_mbr_dynamic_param_rule、pro_mbr_hold_rule、pro_mbr_step_person_role、pro_mbr_alternative_process_rule、pro_outsource_operation_rule、pro_mbr_execution_context、pro_mbr_context_refresh_log；MBR导入控制候选表待DBA评审
 
@@ -37,14 +39,24 @@ MES 中的 `pro_mbr_*` 表定位为 PLM MBR 的执行镜像和执行结构，不
 1. PLM/文控系统完成MBR设计、审批、生效或冻结。
 2. PLM向MES下发已批准结构化MBR，或在过渡期由授权人员上传受控Excel模板。
 3. MES登记接收/导入批次、来源版本和来源文件。
-4. MES执行结构完整性、引用对象、字典项、单位精度和必填规则校验。
+4. MES执行结构完整性、引用对象、字典项、单位精度和必填规则校验；引用对象至少包括工艺路线工序、BOM明细或物料、设备/工装/夹具、工艺参数或采集点位、检验方案/检验特性。
 5. 校验通过后写入`pro_mbr_*`镜像表，建立PLM版本与MES镜像版本映射。
 6. 校验失败时生成错误明细，不允许进入可执行状态。
+
+### 3.1.1 MBR导入映射校验口径
+1. MBR Header/Version必须明确产品、工厂、产线、BOM版本、工艺路线版本和PLM MBR版本。
+2. MBR Phase必须能映射到有效工艺路线工序。
+3. MBR Step必须归属Phase；若Step也携带工序引用，必须与所属Phase的工序一致。
+4. MBR Step Material必须匹配BOM明细或物料；同一BOM项被多个工步引用时，数量汇总必须与BOM/工序发料数量受控匹配。
+5. MBR Step Equipment必须匹配设备、工装或夹具；如工艺路线已定义工序资源，步骤设备不得脱离工序资源范围。
+6. MBR Step Parameter必须匹配工艺参数或采集点位，参数编码、单位、上下限和采集方式必须可校验。
+7. MBR Step Quality必须匹配检验方案、检验特性或质控项，判定标准、复核和签名要求必须可执行。
+8. PLM MBR或Excel批导发现上游对象不存在、状态无效或版本不匹配时，只能生成导入错误或待确认项，不允许自动创建或修改BOM/工艺路线基准。
 
 ### 3.2 工单执行快照流程
 1. SAP生产订单同步或MES创建工单时，系统匹配当前有效的PLM MBR镜像。
 2. 工单下达时，MES将MBR镜像预编译为工单/批次执行快照。
-3. 执行快照固化Phase/Step、参数、物料、设备、质控、签名、跳转、返工和Hold规则。
+3. 执行快照固化来源BOM版本、工艺路线版本、MBR版本、来源文件/来源映射、Phase/Step结构、Step物料、Step设备、Step参数、Step质控、签名、跳转、返工和Hold规则。
 4. EBR执行引用执行快照，不实时读取PLM，也不随PLM后续改版自动变化。
 5. 快照哈希、生成时间、来源版本和生成日志必须进入审计追踪。
 
@@ -59,6 +71,7 @@ MES 中的 `pro_mbr_*` 表定位为 PLM MBR 的执行镜像和执行结构，不
 - MBR导入控制：`pro_mbr_import_batch`、`pro_mbr_import_item`、`pro_mbr_import_validate_log`、`pro_mbr_import_error`。
 - MBR来源文件与映射：`pro_mbr_source_file`、`pro_mbr_source_map`。
 - 执行快照沿用：`pro_mbr_execution_context`、`pro_mbr_context_refresh_log`。
+- MBR与上游基准的精确映射候选字段：`pro_mbr_step_material.bom_item_op_map_id`、`pro_mbr_step_equipment.op_res_id`、`pro_mbr_step_parameter.op_param_id`，是否落地由DBA按治理规范评审。
 - 上述候选模型仅作为需求口径，字段字典和DDL必须由DBA按数据模型治理规范评审后落地。
 
 ## 4. 合规要求
@@ -70,7 +83,7 @@ MES 中的 `pro_mbr_*` 表定位为 PLM MBR 的执行镜像和执行结构，不
 
 ## 5. 与其他模块的关系
 - PLM/文控 → MBR镜像（L9到L2，已批准结构化MBR接收）
-- BOM + 工艺路线 → MBR镜像（L2层引用和校验基础）
+- BOM + 工艺路线 → MBR镜像（L2层引用和校验基础；BOM/工艺路线维护工序级基准，MBR维护工步级执行明细）
 - MBR镜像 → 生产订单（L4层，工单下达生成执行快照）
 - MBR执行快照 → EBR步骤记录（L5层，执行固化）
 - MBR步骤参数快照 → EBR参数记录（L5层，参数固化）
